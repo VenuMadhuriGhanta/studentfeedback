@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, redirect
-import mysql.connector
 from config import db_config
+import mysql.connector
 
 app = Flask(__name__)
 
@@ -14,21 +14,19 @@ def index():
 @app.route('/feedback', methods=['GET', 'POST'])
 def feedback():
     if request.method == 'POST':
-        student_name = request.form['name']
+        name = request.form['name']
         email = request.form['email']
-        comments = request.form['comments']  # ✅ fix: 'comment' → 'comments' to match textarea name
-
+        comment = request.form['comments']
         conn = get_db_connection()
         cursor = conn.cursor()
         cursor.execute(
-            "INSERT INTO feedback (student_name, email, comments) VALUES (%s, %s, %s)",
-            (student_name, email, comments)
+            "INSERT INTO feedback(student_name, email, comments) VALUES (%s, %s, %s)",
+            (name, email, comment)
         )
         conn.commit()
         cursor.close()
         conn.close()
         return redirect('/')
-
     return render_template('feedback.html')
 
 @app.route('/admin')
